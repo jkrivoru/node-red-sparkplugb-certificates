@@ -10,8 +10,6 @@ However, standard MQTT brokers (that are not SparkplugB-aware) do not provide th
 This Node-RED flow subscribes to SparkplugB topics (`spBv1.0/...`) for birth and death messages and republishes them under the correct certificate topics with retention enabled.  
 This allows SCADA systems and clients to reliably retrieve the latest known device and node states when connecting.
 
----
-
 ## Features
 
 - 🛠 Intercepts NBIRTH, DBIRTH, NDEATH, DDEATH messages from SparkplugB devices.
@@ -20,16 +18,12 @@ This allows SCADA systems and clients to reliably retrieve the latest known devi
 - 🛡 Dummy-proof error handling for malformed topics or unexpected messages.
 - 🧩 100% Node-RED, no custom plugins required on the broker side.
 
----
-
 ## Requirements
 
 - [Node-RED](https://nodered.org/)
 - A standard MQTT broker (e.g., Mosquitto) without native SparkplugB awareness.
 - [node-red-contrib-mqtt-sparkplug-plus](https://flows.nodered.org/node/node-red-contrib-mqtt-sparkplug-plus) Node-RED package for easy SparkplugB message parsing and generation.
 - Working SparkplugB devices or test publishers.
-
----
 
 ## Installation
 
@@ -42,23 +36,16 @@ This allows SCADA systems and clients to reliably retrieve the latest known devi
 5. Deploy the flow.
 6. Start receiving and retaining SparkplugB certificates automatically.
 
-
----
-
 ## Usage
 
 - Devices publish NBIRTH/DBIRTH messages to `spBv1.0/<GroupID>/<Type>/<NodeID>/<DeviceID>`.
 - The flow republishes them with retention to `$sparkplug/certificates/<GroupID>/<Type>/<NodeID>/<DeviceID>`.
 - SCADA clients can subscribe to `$sparkplug/certificates/#` to retrieve the latest device and node states at any time.
 
----
-
 ## License
 
 This project is licensed under the MIT License.  
 See the [LICENSE](LICENSE) file for details.
-
----
 
 ## Author
 
