@@ -1,0 +1,147 @@
+[
+    {
+        "id": "bdfd6beaba1b87f0",
+        "type": "tab",
+        "label": "SparkplugB Certificate Implementation",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "4142a4f6f4ddfdff",
+        "type": "mqtt sparkplug in",
+        "z": "bdfd6beaba1b87f0",
+        "name": "",
+        "topic": "spBv1.0/+/NBIRTH/+",
+        "qos": "2",
+        "broker": "0dfdb9cf298c42ec",
+        "x": 190,
+        "y": 100,
+        "wires": [
+            [
+                "d8666d081cf283cc"
+            ]
+        ]
+    },
+    {
+        "id": "bca327979435a362",
+        "type": "mqtt sparkplug in",
+        "z": "bdfd6beaba1b87f0",
+        "name": "",
+        "topic": "spBv1.0/+/DBIRTH/+/+",
+        "qos": "2",
+        "broker": "0dfdb9cf298c42ec",
+        "x": 180,
+        "y": 160,
+        "wires": [
+            [
+                "d8666d081cf283cc"
+            ]
+        ]
+    },
+    {
+        "id": "4b193f0c5b70ac68",
+        "type": "mqtt sparkplug in",
+        "z": "bdfd6beaba1b87f0",
+        "name": "",
+        "topic": "spBv1.0/+/NDEATH/+",
+        "qos": "2",
+        "broker": "0dfdb9cf298c42ec",
+        "x": 180,
+        "y": 240,
+        "wires": [
+            [
+                "d8666d081cf283cc"
+            ]
+        ]
+    },
+    {
+        "id": "07979ec2f5ddea71",
+        "type": "mqtt sparkplug in",
+        "z": "bdfd6beaba1b87f0",
+        "name": "",
+        "topic": "spBv1.0/+/DDEATH/+/+",
+        "qos": "2",
+        "broker": "0dfdb9cf298c42ec",
+        "x": 180,
+        "y": 300,
+        "wires": [
+            [
+                "d8666d081cf283cc"
+            ]
+        ]
+    },
+    {
+        "id": "d8666d081cf283cc",
+        "type": "function",
+        "z": "bdfd6beaba1b87f0",
+        "name": "handle certificates",
+        "func": "if (!msg.topic) {\n    node.error(\"Missing topic in incoming message\", msg);\n    return null;\n}\n\nvar topicParts = msg.topic.split('/');\nif (topicParts.length < 4) {\n    node.error(\"Invalid topic structure. Expected at least 4 parts (namespace/group/messageType/edgeNode)\", msg);\n    return null;\n}\n\nvar namespace = topicParts[0]; // spBv1.0\nvar groupId = topicParts[1];\nvar messageType = topicParts[2];\nvar edgeNodeId = topicParts[3];\nvar deviceId = topicParts.length > 4 ? topicParts[4] : null;\n\n// List of recognized message types\nvar validBirthTypes = [\"NBIRTH\", \"DBIRTH\"];\nvar validDeathTypes = [\"NDEATH\", \"DDEATH\"];\n\nif (validBirthTypes.includes(messageType)) {\n    if (!edgeNodeId) {\n        node.error(\"Missing edgeNodeId for Birth message\", msg);\n        return null;\n    }\n    msg.retain = true;\n    msg.qos = 1;\n\n    if (messageType === \"NBIRTH\") {\n        msg.topic = `${namespace}/certificates/${groupId}/NBIRTH/${edgeNodeId}`;\n    } else if (messageType === \"DBIRTH\") {\n        if (!deviceId) {\n            node.error(\"Missing deviceId for DBIRTH message\", msg);\n            return null;\n        }\n        msg.topic = `${namespace}/certificates/${groupId}/DBIRTH/${edgeNodeId}/${deviceId}`;\n    }\n\n} else if (validDeathTypes.includes(messageType)) {\n    if (!edgeNodeId) {\n        node.error(\"Missing edgeNodeId for Death message\", msg);\n        return null;\n    }\n    msg.retain = true;\n    msg.qos = 1;\n\n    if (messageType === \"NDEATH\") {\n        msg.topic = `${namespace}/certificates/${groupId}/NBIRTH/${edgeNodeId}`;\n    } else if (messageType === \"DDEATH\") {\n        if (!deviceId) {\n            node.error(\"Missing deviceId for DDEATH message\", msg);\n            return null;\n        }\n        msg.topic = `${namespace}/certificates/${groupId}/DBIRTH/${edgeNodeId}/${deviceId}`;\n    }\n    // Empty payload to clear retained certificate\n    msg.payload = {};\n} else {\n    node.warn(`Unsupported SparkplugB message type: ${messageType}`);\n    return null;\n}\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 490,
+        "y": 200,
+        "wires": [
+            [
+                "2dcbd5a5a9438f14"
+            ]
+        ]
+    },
+    {
+        "id": "2dcbd5a5a9438f14",
+        "type": "mqtt sparkplug out",
+        "z": "bdfd6beaba1b87f0",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "broker": "a81984704b7ab256",
+        "x": 690,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "0dfdb9cf298c42ec",
+        "type": "mqtt-sparkplug-broker",
+        "name": "sparkplug",
+        "deviceGroup": "Fresco",
+        "eonName": "",
+        "broker": "uns-mqtt",
+        "port": 1883,
+        "clientid": "",
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "enableStoreForward": false,
+        "compressAlgorithm": "",
+        "aliasMetrics": false,
+        "useTemplates": true,
+        "manualEoNBirth": true,
+        "primaryScada": ""
+    },
+    {
+        "id": "a81984704b7ab256",
+        "type": "mqtt-sparkplug-broker",
+        "name": "mqtt",
+        "deviceGroup": "",
+        "eonName": "",
+        "broker": "loclhost",
+        "port": 1883,
+        "clientid": "",
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "enableStoreForward": false,
+        "compressAlgorithm": "",
+        "aliasMetrics": false,
+        "useTemplates": true,
+        "manualEoNBirth": false,
+        "primaryScada": ""
+    }
+]
