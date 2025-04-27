@@ -1,5 +1,7 @@
 # SparkplugB Certificate Handler for Non-SparkplugB Aware MQTT Brokers (Node-RED)
 
+[SparkplugB Certificate Handler in Node-RED library](https://flows.nodered.org/flow/3914b66ef2b3cff0435ae431831847cc)
+
 This project provides a lightweight Node-RED flow that enhances a standard MQTT broker with basic SparkplugB certificate awareness.
 
 ![image](https://github.com/user-attachments/assets/b5b3ea7c-ea8a-4134-8a07-d5c4f299d89f)
