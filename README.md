@@ -2,6 +2,8 @@
 
 This project provides a lightweight Node-RED flow that enhances a standard MQTT broker with basic SparkplugB certificate awareness.
 
+![image](https://github.com/user-attachments/assets/b5b3ea7c-ea8a-4134-8a07-d5c4f299d89f)
+
 **Problem:**  
 SparkplugB specification requires brokers to retain the latest NBIRTH/DBIRTH (birth) messages and make them available on special `$sparkplug/certificates/...` topics with `retain=true`.  
 However, standard MQTT brokers (that are not SparkplugB-aware) do not provide this behavior out of the box.
